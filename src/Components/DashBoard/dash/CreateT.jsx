@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MdOutlineCreateNewFolder } from "react-icons/md";
 import { Link } from "react-router-dom";
 import {
@@ -23,9 +23,21 @@ import Swal from "sweetalert2";
 
 const CreateT = () => {
 
+
+  const [data,setData] = useState()
+
     const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(!open);
   const axiosP = useAxios()
+
+
+  useEffect(() => {
+    axiosP.get('/todo')
+      .then(res => setData(res.data))
+      .catch(err => console.error(err));
+  }, [axiosP]);
+  console.log(data);
+
 
   const { register, handleSubmit } = useForm();
 
@@ -83,15 +95,14 @@ const CreateT = () => {
     </thead>
     <tbody>
         <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-            <th scope="row" className="px-6 py-4 font-medium text-gray-400 whitespace-nowrap dark:text-white">
-               <Link>Task 01 todo</Link>
-            </th>
-            <td className="px-6 py-4">
-            <Link>Task 01 todo</Link>
-            </td>
-            <td className="px-6 py-4">
-            <Link>Task 01 todo</Link>
-            </td>
+           {
+            data?.map(item=>
+              <tr key={item._id} scope="row" className="px-6 py-4 font-medium text-gray-400 whitespace-nowrap dark:text-white">
+              <Link>{item.title}</Link>
+            </tr>
+            )
+           }
+           
            
         </tr>
      
